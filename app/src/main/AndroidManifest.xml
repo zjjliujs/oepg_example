@@ -12,6 +12,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.openglesbook.example6_3.Example6_3" />
+
+        <activity android:name="com.openglesbook.example6_6.Example6_6" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

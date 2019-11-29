@@ -30,7 +30,7 @@
 //            http://my.safaribooksonline.com/book/animation-and-3d/9780133440133
 //
 
-package com.openglesbook.example6_3;
+package com.openglesbook.example6_6;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -41,8 +41,7 @@ import com.openglesbook.common.AppUtils;
 /**
  * Activity class for example program that detects OpenGL ES 3.0.
  **/
-public class Example6_3 extends MyBaseActivity {
-
+public class Example6_6 extends MyBaseActivity {
     private final int CONTEXT_CLIENT_VERSION = 3;
     private GLSurfaceView mGLSurfaceView;
 
@@ -55,7 +54,7 @@ public class Example6_3 extends MyBaseActivity {
             // Tell the surface view we want to create an OpenGL ES 3.0-compatible
             // context, and set an OpenGL ES 3.0-compatible renderer.
             mGLSurfaceView.setEGLContextClientVersion(CONTEXT_CLIENT_VERSION);
-            mGLSurfaceView.setRenderer(new Example6_3Renderer(this));
+            mGLSurfaceView.setRenderer(new Example6_6Renderer(this));
         } else {
             logError("OpenGL ES 3.0 not supported on device.  Exiting...");
             finish();

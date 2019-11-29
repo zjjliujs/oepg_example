@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">OEPG Examples</string>
     <string name="example_6_3">Example 6.3</string>
-    <string name="app_name">OpenGL ES3.0 Program Guide Example</string>
+    <string name="example_6_6">Example 6.6</string>
 </resources>
