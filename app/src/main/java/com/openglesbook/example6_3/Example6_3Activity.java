@@ -32,51 +32,22 @@
 
 package com.openglesbook.example6_3;
 
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-import com.ljs.android.oepg_ch6.MyBaseActivity;
-import com.openglesbook.common.AppUtils;
+import com.ljs.android.oepg_ch6.base.GLBaseActivity;
 
 /**
  * Activity class for example program that detects OpenGL ES 3.0.
  **/
-public class Example6_3 extends MyBaseActivity {
-
-    private final int CONTEXT_CLIENT_VERSION = 3;
-    private GLSurfaceView mGLSurfaceView;
+public class Example6_3Activity extends GLBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGLSurfaceView = new GLSurfaceView(this);
-
-        if (AppUtils.detectOpenGLES30(this)) {
-            // Tell the surface view we want to create an OpenGL ES 3.0-compatible
-            // context, and set an OpenGL ES 3.0-compatible renderer.
-            mGLSurfaceView.setEGLContextClientVersion(CONTEXT_CLIENT_VERSION);
-            mGLSurfaceView.setRenderer(new Example6_3Renderer(this));
-        } else {
-            logError("OpenGL ES 3.0 not supported on device.  Exiting...");
-            finish();
-        }
-
-        setContentView(mGLSurfaceView);
     }
 
     @Override
-    protected void onResume() {
-        // Ideally a game should implement onResume() and onPause()
-        // to take appropriate action when the activity looses focus
-        super.onResume();
-        mGLSurfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        // Ideally a game should implement onResume() and onPause()
-        // to take appropriate action when the activity looses focus
-        super.onPause();
-        mGLSurfaceView.onPause();
+    protected Example6_3Renderer getRenderer() {
+        return new Example6_3Renderer(this);
     }
 }
