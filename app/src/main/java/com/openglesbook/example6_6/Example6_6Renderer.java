@@ -83,8 +83,8 @@ public class Example6_6Renderer implements GLSurfaceView.Renderer {
     // Handle to a program object
     private int program;
     // Additional member variables
-    private int mWidth;
-    private int mHeight;
+    private int width;
+    private int height;
     private FloatBuffer vertices;
     private FloatBuffer colors;
     private ShortBuffer indices;
@@ -140,7 +140,7 @@ public class Example6_6Renderer implements GLSurfaceView.Renderer {
     //
     public void onDrawFrame(GL10 glUnused) {
         // Set the viewport
-        GLES30.glViewport(0, 0, mWidth, mHeight);
+        GLES30.glViewport(0, 0, width, height);
 
         // Clear the color buffer
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
@@ -220,7 +220,7 @@ public class Example6_6Renderer implements GLSurfaceView.Renderer {
     // Handle surface changes
     //
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-        mWidth = width;
-        mHeight = height;
+        this.width = width;
+        this.height = height;
     }
 }
