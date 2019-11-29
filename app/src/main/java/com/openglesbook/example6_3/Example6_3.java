@@ -33,12 +33,11 @@
 package com.openglesbook.example6_3;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.openglesbook.common.AppUtils;
 
 /**
  * Activity class for example program that detects OpenGL ES 3.0.
@@ -53,25 +52,17 @@ public class Example6_3 extends Activity {
         super.onCreate(savedInstanceState);
         mGLSurfaceView = new GLSurfaceView(this);
 
-        if (detectOpenGLES30()) {
+        if (AppUtils.detectOpenGLES30(this)) {
             // Tell the surface view we want to create an OpenGL ES 3.0-compatible
             // context, and set an OpenGL ES 3.0-compatible renderer.
             mGLSurfaceView.setEGLContextClientVersion(CONTEXT_CLIENT_VERSION);
             mGLSurfaceView.setRenderer(new Example6_3Renderer(this));
         } else {
-            Log.e("SimpleTexture2D", "OpenGL ES 3.0 not supported on device.  Exiting...");
+            logError("OpenGL ES 3.0 not supported on device.  Exiting...");
             finish();
-
         }
 
         setContentView(mGLSurfaceView);
-    }
-
-    private boolean detectOpenGLES30() {
-        ActivityManager am =
-                (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo info = am.getDeviceConfigurationInfo();
-        return (info.reqGlEsVersion >= 0x30000);
     }
 
     @Override
@@ -88,5 +79,9 @@ public class Example6_3 extends Activity {
         // to take appropriate action when the activity looses focus
         super.onPause();
         mGLSurfaceView.onPause();
+    }
+
+    private void logError(String msg) {
+        Log.e(this.getClass().getSimpleName(), msg);
     }
 }
