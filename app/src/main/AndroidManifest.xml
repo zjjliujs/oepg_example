@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name="com.openglesbook.map_buffers.MapBuffersActivity" />
+
         <activity android:name="com.openglesbook.example6_3.Example6_3Activity" />
 
         <activity android:name="com.openglesbook.example6_6.Example6_6Activity" />

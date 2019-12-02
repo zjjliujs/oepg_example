@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.ljs.android.oepg_ch6.base.MyBaseActivity;
 import com.ljs.android.oepg_ch6.databinding.ActivityMainBinding;
+import com.openglesbook.map_buffers.MapBuffersActivity;
 import com.openglesbook.example6_3.Example6_3Activity;
 import com.openglesbook.example6_6.Example6_6Activity;
 
@@ -30,6 +31,11 @@ public class MainActivity extends MyBaseActivity {
 
         binding.example66Btn.setOnClickListener(v -> {
             Intent intent = new Intent(this, Example6_6Activity.class);
+            startActivity(intent);
+        });
+
+        binding.mapBufferBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MapBuffersActivity.class);
             startActivity(intent);
         });
     }

@@ -3,4 +3,5 @@
     <string name="app_name">OEPG Examples</string>
     <string name="example_6_3">Example 6.3</string>
     <string name="example_6_6">Example 6.6</string>
+    <string name="map_buffer">Map Buffer</string>
 </resources>
