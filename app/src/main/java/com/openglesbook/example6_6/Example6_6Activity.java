@@ -35,7 +35,7 @@ package com.openglesbook.example6_6;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-import com.ljs.android.oepg_ch6.base.GLBaseActivity;
+import com.openglesbook.base.GLBaseActivity;
 
 /**
  * Activity class for example program that detects OpenGL ES 3.0.

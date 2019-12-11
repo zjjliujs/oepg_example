@@ -1,11 +1,12 @@
-package com.ljs.android.oepg_ch6;
+package com.openglesbook;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 
-import com.ljs.android.oepg_ch6.base.MyBaseActivity;
+import com.ljs.android.oepg_ch6.R;
+import com.openglesbook.base.MyBaseActivity;
 import com.ljs.android.oepg_ch6.databinding.ActivityMainBinding;
 import com.openglesbook.map_buffers.MapBuffersActivity;
 import com.openglesbook.example6_3.Example6_3Activity;

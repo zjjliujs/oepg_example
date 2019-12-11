@@ -1,4 +1,4 @@
-package com.ljs.android.oepg_ch6.base;
+package com.openglesbook.base;
 
 import android.util.Log;
 
