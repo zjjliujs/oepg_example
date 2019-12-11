@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="item_title" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:layout_gravity">left|center_vertical</item>
+        <item name="android:padding">23dp</item>
+        <item name="android:background">@drawable/item_bg</item>
+    </style>
 </resources>
