@@ -33,11 +33,11 @@
 // Example_6_6
 //
 //    This example demonstrates drawing a primitive with
-//    a separate VBO per attribute
+//    a separate VBOActivity per attribute
 //
 //
 
-package com.openglesbook.example6_6;
+package com.openglesbook.ch6_example_6;
 
 import android.content.Context;
 import android.opengl.GLES30;

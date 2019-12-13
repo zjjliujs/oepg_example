@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OEPG Examples</string>
+    <string name="example_ch2_hello_triangle">Ch2 Hello Triangle</string>
     <string name="example_6_3">Example 6.3</string>
     <string name="example_6_6">Example 6.6</string>
-    <string name="map_buffer">Map Buffer</string>
-    <string name="example_ch2_hello_triangle">Cha Hello Triangle</string>
+    <string name="ch6_map_buffer">Ch6 Map Buffer</string>
+    <string name="ch6_vao">Ch6 Vertex Array Buffer</string>
+    <string name="ch6_vbo">Ch6 Vertex Buffer Object</string>
 </resources>

@@ -30,24 +30,20 @@
 //            http://my.safaribooksonline.com/book/animation-and-3d/9780133440133
 //
 
-package com.openglesbook.example6_6;
+package com.openglesbook.ch6_vao;
 
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 
 import com.openglesbook.base.GLBaseActivity;
 
 /**
  * Activity class for example program that detects OpenGL ES 3.0.
  **/
-public class Example6_6Activity extends GLBaseActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+public class VAOActivity extends GLBaseActivity {
 
     @Override
     protected GLSurfaceView.Renderer getRenderer() {
-        return new Example6_6Renderer(this);
+        return new VAORenderer(this);
     }
+
 }

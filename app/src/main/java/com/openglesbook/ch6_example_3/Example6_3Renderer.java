@@ -36,7 +36,7 @@
 //    and a constant vertex attribute
 //
 
-package com.openglesbook.example6_3;
+package com.openglesbook.ch6_example_3;
 
 import android.content.Context;
 import android.opengl.GLES30;

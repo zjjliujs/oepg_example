@@ -1,82 +1,81 @@
+// The MIT License (MIT)
 //
-// Book:      OpenGL(R) ES 2.0 Programming Guide
-// Authors:   Aaftab Munshi, Dan Ginsburg, Dave Shreiner
-// ISBN-10:   0321502795
-// ISBN-13:   9780321502797
+// Copyright (c) 2013 Dan Ginsburg, Budirijanto Purnomo
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+//
+// Book:      OpenGL(R) ES 3.0 Programming Guide, 2nd Edition
+// Authors:   Dan Ginsburg, Budirijanto Purnomo, Dave Shreiner, Aaftab Munshi
+// ISBN-10:   0-321-93388-5
+// ISBN-13:   978-0-321-93388-1
 // Publisher: Addison-Wesley Professional
-// URLs:      http://safari.informit.com/9780321563835
-//            http://www.opengles-book.com
+// URLs:      http://www.opengles-book.com
+//            http://my.safaribooksonline.com/book/animation-and-3d/9780133440133
 //
 
 // Hello_Triangle
 //
 //    This is a simple example that draws a single triangle with
-//    a minimal vertex/fragment shader.  The purpose of this 
-//    example is to demonstrate the basic concepts of 
-//    OpenGL ES 2.0 rendering.
+//    a minimal vertex/fragment shader.  The purpose of this
+//    example is to demonstrate the basic concepts of
+//    OpenGL ES 3.0 rendering.
 
 package com.openglesbook.ch2_hello_triangle;
 
 import android.content.Context;
-import android.opengl.GLES20;
-import android.opengl.Matrix;
+import android.opengl.GLES30;
+import android.util.Log;
 
 import com.openglesbook.base.MyBaseRenderer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class HelloTriangleRenderer extends MyBaseRenderer {
-    public static final int ATTRIBUTE_A_POSITION_LOCATION = 0;
-    private static final int ATTRIBUTE_A_COLOR_LOCATION = 1;
-
-    private final float[] mPositionVerticesData = {
-            0.0f, 0.5f, -3f
-            , -0.5f, -0.5f, -3f
-            , 0.5f, -0.5f, -3f};
-    private final float[] mColorVerticesData = {
-            1.0f, 0.0f, 0.0f, 1.0f
-            , 0.0f, 1.0f, 0.0f, 1.0f
-            , 0.0f, 0.0f, 1.0f, 1.0f
-    };
+    public static final int POINT_SIZE = 3;
+    public static final int BYTES_PER_FLOAT = 4;
+    public static final int POINTS_COUNT = 3;
+    private static final String V_POSITION_NAME = "vPosition";
+    private static final int V_POSITION_INDEX = 0;
+    private static String TAG = "HelloTriangleRenderer";
+    private final float[] mVerticesData =
+            {0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f};
     // Member variables
     private int mProgramObject;
-    /*
-        private int mWidth;
-        private int mHeight;
-    */
-    private FloatBuffer mPositionVertices;
-    private FloatBuffer mColorVertices;
-    private int muMVPMatrixHandle;
-    private float[] mMVPMatrix = new float[16];
-    private float[] mProjMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
-    private float[] mMMatrix = new float[16];
+    private int mWidth;
+    private int mHeight;
+    private FloatBuffer mVertices;
 
-    /*
-        private final float[] mPositionVerticesData = {
-                -1.0f, -0.5f, 0,
-                1.0f, -0.5f, 0,
-                0.0f, 1.11803399f, 0
-        };
-    */
     ///
     // Constructor
     //
     public HelloTriangleRenderer(Context context) {
-        mPositionVertices = ByteBuffer.allocateDirect(mPositionVerticesData.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mPositionVertices.put(mPositionVerticesData).position(0);
-
-        mColorVertices = ByteBuffer.allocateDirect(mColorVerticesData.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mColorVertices.put(mColorVerticesData).position(0);
+        mVertices = ByteBuffer
+                .allocateDirect(mVerticesData.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mVertices.put(mVerticesData).position(0);
     }
 
     ///
@@ -88,25 +87,27 @@ public class HelloTriangleRenderer extends MyBaseRenderer {
         int[] compiled = new int[1];
 
         // Create the shader object
-        shader = GLES20.glCreateShader(type);
+        shader = GLES30.glCreateShader(type);
 
-        if (shader == 0)
-            return 0;
-
-        // Load the shader source
-        GLES20.glShaderSource(shader, shaderSrc);
-
-        // Compile the shader
-        GLES20.glCompileShader(shader);
-
-        // Check the compile status
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-
-        if (compiled[0] == 0) {
-            logError(GLES20.glGetShaderInfoLog(shader));
-            GLES20.glDeleteShader(shader);
+        if (shader == 0) {
             return 0;
         }
+
+        // Load the shader source
+        GLES30.glShaderSource(shader, shaderSrc);
+
+        // Compile the shader
+        GLES30.glCompileShader(shader);
+
+        // Check the compile status
+        GLES30.glGetShaderiv(shader, GLES30.GL_COMPILE_STATUS, compiled, 0);
+
+        if (compiled[0] == 0) {
+            Log.e(TAG, GLES30.glGetShaderInfoLog(shader));
+            GLES30.glDeleteShader(shader);
+            return 0;
+        }
+
         return shader;
     }
 
@@ -114,24 +115,22 @@ public class HelloTriangleRenderer extends MyBaseRenderer {
     // Initialize the shader and program object
     //
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        String vShaderStr = "uniform mat4 uMVPMatrix; \n"
-                + "attribute vec4 aPosition;    \n"
-                + "attribute vec4 aColor;       \n"
-                + "varying vec4 vColor;         \n"
-                + "void main()                  \n"
-                + "{                            \n"
-                + "     gl_Position = uMVPMatrix * aPosition;  \n"
-                //+ "     vColor = vec4 (0.0, 1.0, 0.0, 1.0);"
-                + "     vColor = aColor;"
-                + "}                            \n";
+        String vShaderStr =
+                "#version 300 es 			  \n"
+                        + "in vec4 vPosition;           \n"
+                        + "void main()                  \n"
+                        + "{                            \n"
+                        + "   gl_Position = vPosition;  \n"
+                        + "}                            \n";
 
-        String fShaderStr = "precision mediump float;					  \n"
-                + "varying vec4 vColor;                         \n"
-                + "void main()                                  \n"
-                + "{                                            \n"
-                //+ "  gl_FragColor = vec4 ( 1.0, 1.0, 0.0, 1.0 );\n"
-                + "     gl_FragColor = vColor;"
-                + "}                                            \n";
+        String fShaderStr =
+                "#version 300 es		 			          	\n"
+                        + "precision mediump float;					  	\n"
+                        + "out vec4 fragColor;	 			 		  	\n"
+                        + "void main()                                  \n"
+                        + "{                                            \n"
+                        + "  fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );	\n"
+                        + "}                                            \n";
 
         int vertexShader;
         int fragmentShader;
@@ -139,104 +138,66 @@ public class HelloTriangleRenderer extends MyBaseRenderer {
         int[] linked = new int[1];
 
         // Load the vertex/fragment shaders
-        vertexShader = LoadShader(GLES20.GL_VERTEX_SHADER, vShaderStr);
-        fragmentShader = LoadShader(GLES20.GL_FRAGMENT_SHADER, fShaderStr);
+        vertexShader = LoadShader(GLES30.GL_VERTEX_SHADER, vShaderStr);
+        fragmentShader = LoadShader(GLES30.GL_FRAGMENT_SHADER, fShaderStr);
 
         // Create the program object
-        programObject = GLES20.glCreateProgram();
+        programObject = GLES30.glCreateProgram();
 
-        if (programObject == 0)
+        if (programObject == 0) {
             return;
+        }
 
-        GLES20.glAttachShader(programObject, vertexShader);
-        GLES20.glAttachShader(programObject, fragmentShader);
+        GLES30.glAttachShader(programObject, vertexShader);
+        GLES30.glAttachShader(programObject, fragmentShader);
 
-        // Bind aPosition to attribute 0
-        GLES20.glBindAttribLocation(programObject, ATTRIBUTE_A_POSITION_LOCATION, "aPosition");
-        GLES20.glBindAttribLocation(programObject, ATTRIBUTE_A_COLOR_LOCATION, "aColor");
+        // Bind vPosition to attribute 0
+        GLES30.glBindAttribLocation(programObject, V_POSITION_INDEX, V_POSITION_NAME);
 
         // Link the program
-        GLES20.glLinkProgram(programObject);
+        GLES30.glLinkProgram(programObject);
 
         // Check the link status
-        GLES20.glGetProgramiv(programObject, GLES20.GL_LINK_STATUS, linked, 0);
+        GLES30.glGetProgramiv(programObject, GLES30.GL_LINK_STATUS, linked, 0);
 
         if (linked[0] == 0) {
-            logError("Error linking program:");
-            logError(GLES20.glGetProgramInfoLog(programObject));
-            GLES20.glDeleteProgram(programObject);
+            Log.e(TAG, "Error linking program:");
+            Log.e(TAG, GLES30.glGetProgramInfoLog(programObject));
+            GLES30.glDeleteProgram(programObject);
             return;
         }
 
         // Store the program object
         mProgramObject = programObject;
 
-        muMVPMatrixHandle = GLES20.glGetUniformLocation(programObject, "uMVPMatrix");
-
-        GLES20.glClearColor(0.f, 0.f, 1.f, 1.f);
-
-        //视线角度？
-        Matrix.setLookAtM(viewMatrix, 0
-                , 0, 0, 0f
-                , 0f, 0f, -1f
-                , 0f, 1.0f, 0f);
+        GLES30.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     }
 
     // /
     // Draw a triangle using the shader pair created in onSurfaceCreated()
     //
     public void onDrawFrame(GL10 glUnused) {
+        // Set the viewport
+        GLES30.glViewport(0, 0, mWidth, mHeight);
+
         // Clear the color buffer
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         // Use the program object
-        GLES20.glUseProgram(mProgramObject);
+        GLES30.glUseProgram(mProgramObject);
 
         // Load the vertex data
-        GLES20.glVertexAttribPointer(ATTRIBUTE_A_POSITION_LOCATION, 3, GLES20.GL_FLOAT, false, 0, mPositionVertices);
-        GLES20.glEnableVertexAttribArray(ATTRIBUTE_A_POSITION_LOCATION);
+        GLES30.glVertexAttribPointer(V_POSITION_INDEX, POINT_SIZE, GLES30.GL_FLOAT, false, 0, mVertices);
+        GLES30.glEnableVertexAttribArray(V_POSITION_INDEX);
 
-        GLES20.glVertexAttribPointer(ATTRIBUTE_A_COLOR_LOCATION, 3, GLES20.GL_FLOAT, false, 0, mColorVertices);
-        GLES20.glEnableVertexAttribArray(ATTRIBUTE_A_COLOR_LOCATION);
-
-        //生成围绕z轴旋转的矩阵
-        Matrix.setRotateM(mMMatrix, 0,
-                0,//rotate angle
-                0, 0, 1.0f);//rotate axis
-        Matrix.scaleM(mMMatrix, 0, 2, 2, 1);
-        //视线矩阵 X 旋转矩阵
-        Matrix.multiplyMM(mMVPMatrix, 0, viewMatrix, 0, mMMatrix, 0);
-        //视窗长宽比调整举证 X 视线矩阵 X 旋转矩阵
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
-
-        GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, POINTS_COUNT);
     }
 
     // /
     // Handle surface changes
     //
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-/*
         mWidth = width;
         mHeight = height;
-*/
-        // Set the viewport
-        GLES20.glViewport(0, 0, width, height);
-
-        float ratio = (float) width / height;
-        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
-        //Matrix.setIdentityM(mMVPMatrix, 0);
-
-        //查询支持的定点属性
-        IntBuffer params = IntBuffer.allocate(10);
-        GLES20.glGetIntegerv(GLES20.GL_MAX_VERTEX_ATTRIBS, params);
-        logDebug(String.format(Locale.CHINA
-                , "position:%d, limit:%d, capacity:%d"
-                , params.position(), params.limit(), params.capacity()));
-        //params.flip();
-        logDebug("max vertex attributes: " + params.get());
     }
-
 }

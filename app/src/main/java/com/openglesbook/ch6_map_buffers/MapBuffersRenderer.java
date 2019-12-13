@@ -34,7 +34,7 @@
 //    This example demonstrates mapping buffer objects
 //
 
-package com.openglesbook.map_buffers;
+package com.openglesbook.ch6_map_buffers;
 
 import android.content.Context;
 import android.opengl.GLES30;

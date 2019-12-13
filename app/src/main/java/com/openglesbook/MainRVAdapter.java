@@ -12,9 +12,11 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ljs.android.oepg_ch6.R;
-import com.openglesbook.example6_3.Example6_3Activity;
-import com.openglesbook.example6_6.Example6_6Activity;
-import com.openglesbook.map_buffers.MapBuffersActivity;
+import com.openglesbook.ch6_example_3.Example6_3Activity;
+import com.openglesbook.ch6_example_6.Example6_6Activity;
+import com.openglesbook.ch6_map_buffers.MapBuffersActivity;
+import com.openglesbook.ch6_vao.VAOActivity;
+import com.openglesbook.ch6_vbo.VBOActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,9 @@ class MainRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         data.add(new Pair<>(R.string.example_ch2_hello_triangle, Example6_3Activity.class));
         data.add(new Pair<>(R.string.example_6_3, Example6_3Activity.class));
         data.add(new Pair<>(R.string.example_6_6, Example6_6Activity.class));
-        data.add(new Pair<>(R.string.map_buffer, MapBuffersActivity.class));
+        data.add(new Pair<>(R.string.ch6_map_buffer, MapBuffersActivity.class));
+        data.add(new Pair<>(R.string.ch6_vao, VAOActivity.class));
+        data.add(new Pair<>(R.string.ch6_vbo, VBOActivity.class));
     }
 
     @NonNull

@@ -14,11 +14,15 @@
 
         <activity android:name="com.openglesbook.ch2_hello_triangle.HelloTriangleActivity" />
 
-        <activity android:name="com.openglesbook.map_buffers.MapBuffersActivity" />
+        <activity android:name="com.openglesbook.ch6_map_buffers.MapBuffersActivity" />
 
-        <activity android:name="com.openglesbook.example6_3.Example6_3Activity" />
+        <activity android:name="com.openglesbook.ch6_example_3.Example6_3Activity" />
 
-        <activity android:name="com.openglesbook.example6_6.Example6_6Activity" />
+        <activity android:name="com.openglesbook.ch6_example_6.Example6_6Activity" />
+
+        <activity android:name="com.openglesbook.ch6_vao.VAOActivity" />
+
+        <activity android:name="com.openglesbook.ch6_vbo.VBOActivity" />
 
         <activity android:name="com.openglesbook.MainActivity">
             <intent-filter>
