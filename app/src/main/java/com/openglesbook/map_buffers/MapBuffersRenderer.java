@@ -38,9 +38,9 @@ package com.openglesbook.map_buffers;
 
 import android.content.Context;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 
 import com.ljs.android.oepg_ch6.R;
+import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.Constants;
 import com.openglesbook.common.ESShader;
 import com.openglesbook.common.TextResourceReader;
@@ -53,7 +53,7 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class MapBuffersRenderer implements GLSurfaceView.Renderer {
+public class MapBuffersRenderer extends MyBaseRenderer {
     private static final int VERTEX_POS_SIZE = 3; // x, y and z
     private static final int VERTEX_COLOR_SIZE = 4; // r, g, b, and a
     private static final int COMPONENT_SIZE = VERTEX_COLOR_SIZE + VERTEX_POS_SIZE;

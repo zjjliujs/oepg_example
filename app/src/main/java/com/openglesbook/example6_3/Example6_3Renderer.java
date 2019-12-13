@@ -40,9 +40,9 @@ package com.openglesbook.example6_3;
 
 import android.content.Context;
 import android.opengl.GLES30;
-import android.opengl.GLSurfaceView;
 
 import com.ljs.android.oepg_ch6.R;
+import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.Constants;
 import com.openglesbook.common.ESShader;
 import com.openglesbook.common.TextResourceReader;
@@ -54,7 +54,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class Example6_3Renderer implements GLSurfaceView.Renderer {
+public class Example6_3Renderer extends MyBaseRenderer {
     //对应vertex shader的layout参数值
     public static final int ATTRIBUTE_INDEX_COLOR = 0;
     //对应vertex shader的layout参数值

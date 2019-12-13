@@ -30,6 +30,7 @@ class MainRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void initData() {
         data = new ArrayList<>();
+        data.add(new Pair<>(R.string.example_ch2_hello_triangle, Example6_3Activity.class));
         data.add(new Pair<>(R.string.example_6_3, Example6_3Activity.class));
         data.add(new Pair<>(R.string.example_6_6, Example6_6Activity.class));
         data.add(new Pair<>(R.string.map_buffer, MapBuffersActivity.class));
