@@ -59,7 +59,6 @@ public class Example6_3Renderer extends MyBaseRenderer {
     public static final int ATTRIBUTE_INDEX_COLOR = 0;
     //对应vertex shader的layout参数值
     public static final int ATTRIBUTE_INDEX_POS = 1;
-    private final Context context;
 
     private final float[] verticesData = {
             0.0f, 0.5f, 0.0f, // v0
@@ -77,7 +76,7 @@ public class Example6_3Renderer extends MyBaseRenderer {
     // Constructor
     //
     public Example6_3Renderer(Context context) {
-        this.context = context;
+        super(context);
         vertices = ByteBuffer
                 .allocateDirect(verticesData.length * Constants.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder())

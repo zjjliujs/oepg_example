@@ -73,7 +73,6 @@ public class MapBuffersRenderer extends MyBaseRenderer {
             0, 1, 2
     };
     private final int[] vboIds = new int[2];
-    private final Context context;
     // Handle to a program object
     private int program;
     // Additional member variables
@@ -86,7 +85,7 @@ public class MapBuffersRenderer extends MyBaseRenderer {
     // Constructor
     //
     public MapBuffersRenderer(Context context) {
-        this.context = context;
+        super(context);
     }
 
     ///

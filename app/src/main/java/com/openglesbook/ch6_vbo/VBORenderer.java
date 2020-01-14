@@ -89,6 +89,7 @@ public class VBORenderer extends MyBaseRenderer {
     // Constructor
     //
     public VBORenderer(Context context) {
+        super(context);
         mVertices = ByteBuffer.allocateDirect(mVerticesData.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mVertices.put(mVerticesData).position(0);

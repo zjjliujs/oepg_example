@@ -90,13 +90,12 @@ public class Example6_6Renderer extends MyBaseRenderer {
     private ShortBuffer indices;
     // VertexBufferObject Ids
     private int[] vboIds = new int[3];
-    private Context context;
 
     ///
     // Constructor
     //
     public Example6_6Renderer(Context context) {
-        this.context = context;
+        super(context);
 
         vertices = ByteBuffer
                 .allocateDirect(verticesData.length * 4)

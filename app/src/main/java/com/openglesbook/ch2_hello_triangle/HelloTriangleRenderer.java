@@ -43,7 +43,9 @@ import android.content.Context;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import com.ljs.android.oepg_ch6.R;
 import com.openglesbook.base.MyBaseRenderer;
+import com.openglesbook.common.TextResourceReader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -71,6 +73,7 @@ public class HelloTriangleRenderer extends MyBaseRenderer {
     // Constructor
     //
     public HelloTriangleRenderer(Context context) {
+        super(context);
         mVertices = ByteBuffer
                 .allocateDirect(mVerticesData.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder())
@@ -115,22 +118,9 @@ public class HelloTriangleRenderer extends MyBaseRenderer {
     // Initialize the shader and program object
     //
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        String vShaderStr =
-                "#version 300 es 			  \n"
-                        + "in vec4 vPosition;           \n"
-                        + "void main()                  \n"
-                        + "{                            \n"
-                        + "   gl_Position = vPosition;  \n"
-                        + "}                            \n";
+        String vShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.vertex_shader_ch2_hello);
 
-        String fShaderStr =
-                "#version 300 es		 			          	\n"
-                        + "precision mediump float;					  	\n"
-                        + "out vec4 fragColor;	 			 		  	\n"
-                        + "void main()                                  \n"
-                        + "{                                            \n"
-                        + "  fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );	\n"
-                        + "}                                            \n";
+        String fShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.fragment_shader_ch2_hello);
 
         int vertexShader;
         int fragmentShader;

@@ -19,9 +19,9 @@ package com.openglesbook.ch9_texture2d;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 
 import com.ljs.android.oepg_ch6.R;
+import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.ESShader;
 
 import java.nio.ByteBuffer;
@@ -32,9 +32,8 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class SimpleTexture2DRenderer implements GLSurfaceView.Renderer {
+public class SimpleTexture2DRenderer extends MyBaseRenderer {
 
-    private final Context context;
     private final float[] mVerticesData =
             {
                     -0.5f, 0.5f, 0.0f, // Position 0
@@ -69,7 +68,7 @@ public class SimpleTexture2DRenderer implements GLSurfaceView.Renderer {
     // Constructor
     //
     public SimpleTexture2DRenderer(Context context) {
-        this.context = context;
+        super(context);
         mVertices = ByteBuffer.allocateDirect(mVerticesData.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mVertices.put(mVerticesData).position(0);
