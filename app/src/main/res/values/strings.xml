@@ -7,4 +7,5 @@
     <string name="ch6_map_buffer">Ch6 Map Buffer</string>
     <string name="ch6_vao">Ch6 Vertex Array Buffer</string>
     <string name="ch6_vbo">Ch6 Vertex Buffer Object</string>
+    <string name="ch9_simple_texture2d">Chaper9 Simple Texture2D</string>
 </resources>
