@@ -41,8 +41,10 @@ package com.openglesbook.ch6_vbo;
 import android.content.Context;
 import android.opengl.GLES30;
 
+import com.ljs.android.oepg_ch6.R;
 import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.ESShader;
+import com.openglesbook.common.TextResourceReader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -112,27 +114,9 @@ public class VBORenderer extends MyBaseRenderer {
     // Initialize the shader and program object
     //
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        String vShaderStr =
-                "#version 300 es                            \n" +
-                        "layout(location = 0) in vec4 a_position;   \n" +
-                        "layout(location = 1) in vec4 a_color;      \n" +
-                        "out vec4 v_color;                          \n" +
-                        "void main()                                \n" +
-                        "{                                          \n" +
-                        "    v_color = a_color;                     \n" +
-                        "    gl_Position = a_position;              \n" +
-                        "}";
+        String vShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.vertex_shader_ch6_vbo);
 
-
-        String fShaderStr =
-                "#version 300 es            \n" +
-                        "precision mediump float;   \n" +
-                        "in vec4 v_color;           \n" +
-                        "out vec4 o_fragColor;      \n" +
-                        "void main()                \n" +
-                        "{                          \n" +
-                        "    o_fragColor = v_color; \n" +
-                        "}";
+        String fShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.fragment_shader_ch6_vbo);
 
         // Load the shaders and get a linked program object
         mProgramObject = ESShader.loadProgram(vShaderStr, fShaderStr);
