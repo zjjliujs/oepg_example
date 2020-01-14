@@ -18,7 +18,7 @@
 package com.openglesbook.ch9_texture2d;
 
 import android.content.Context;
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 
 import com.ljs.android.oepg_ch6.R;
 import com.openglesbook.base.MyBaseRenderer;
@@ -34,6 +34,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class SimpleTexture2DRenderer extends MyBaseRenderer {
+
+    private static final int TEST_TEXTURE_RGB = 0;
+    private static final int TEST_TEXTURE_SIMPLE_LUMINANCE = 1;
+    private static final int TEST_TEXTURE_MAP_LUMINANCE = 2;
 
     private final float[] mVerticesData =
             {
@@ -64,6 +68,7 @@ public class SimpleTexture2DRenderer extends MyBaseRenderer {
     private int mHeight;
     private FloatBuffer mVertices;
     private ShortBuffer mIndices;
+    private int testTextureFormat = TEST_TEXTURE_MAP_LUMINANCE;
 
     ///
     // Constructor
@@ -86,61 +91,69 @@ public class SimpleTexture2DRenderer extends MyBaseRenderer {
         int[] textureId = new int[1];
 
         // Use tightly packed data
-        GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
+        GLES30.glPixelStorei(GLES30.GL_UNPACK_ALIGNMENT, 1);
 
         //  Generate a texture object
-        GLES20.glGenTextures(1, textureId, 0);
+        GLES30.glGenTextures(1, textureId, 0);
 
         // Bind the texture object
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0]);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId[0]);
 
         // 2x2 Image, 3 bytes per pixel (R, G, B)
-        /*
-        byte[] pixels =
-                {
-                        (byte) 0xff,   0,   0, // Red
-                        0, (byte) 0xff,   0, // Green
-                        0,   0, (byte) 0xff, // Blue
-                        (byte) 0xff, (byte) 0xff,   0  // Yellow
-                };
-        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(4*3);
+        byte[] pixels;
+        int width, height;
+        ByteBuffer pixelBuffer;
+        int internalFormat;
+        int capacity;
+        int type = GLES30.GL_UNSIGNED_BYTE;
+        if (testTextureFormat == TEST_TEXTURE_RGB) {
+            pixels = new byte[]{
+                    (byte) 0xff, 0, 0, // Red
+                    0, (byte) 0xff, 0, // Green
+                    0, 0, (byte) 0xff, // Blue
+                    (byte) 0xff, (byte) 0xff, 0  // Yellow
+            };
+            width = 2;
+            height = 2;
+            capacity = width * height * 3;
+            internalFormat = GLES30.GL_RGB;
+        } else if (testTextureFormat == TEST_TEXTURE_MAP_LUMINANCE) {
+            int[] data = context.getResources().getIntArray(R.array.map_data1);
+            pixels = new byte[data.length];
+            for (int i = 0; i < data.length; ++i)
+                pixels[i] = (byte) data[i];
+            width = 353;
+            height = 282;
+            internalFormat = GLES30.GL_LUMINANCE;
+            capacity = width * height;
+        } else {
+            pixels = new byte[]{
+                    (byte) 0xff
+                    , (byte) 0xaa
+                    , (byte) 0x77
+                    , (byte) 0x44,
+            };
+            width = 2;
+            height = 2;
+            internalFormat = GLES30.GL_LUMINANCE;
+            capacity = width * height;
+        }
+        pixelBuffer = ByteBuffer.allocateDirect(capacity);
         pixelBuffer.put(pixels).position(0);
         //  Load the texture
-        GLES20.glTexImage2D ( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGB, 2, 2, 0, GLES20.GL_RGB, GLES20.GL_UNSIGNED_BYTE, pixelBuffer );
-        */
-        /*
-        byte[] pixels =
-                {
-                        (byte) 0xff
-                        ,(byte) 0xaa
-                        ,(byte) 0x77
-                        ,(byte) 0x44,
-                };
-        */
-        int[] data = context.getResources().getIntArray(R.array.map_data1);
-        byte[] pixels = new byte[data.length];
-        for (int i = 0; i < data.length; ++i)
-            pixels[i] = (byte) data[i];
-        int width = 353;
-        int height = 282;
-        //int width = 2;
-        //int height = 2;
-        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(width * height);
-        pixelBuffer.put(pixels).position(0);
-        //  Load the texture
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D
                 , 0
-                , GLES20.GL_LUMINANCE
+                , internalFormat
                 , width
                 , height
                 , 0
-                , GLES20.GL_LUMINANCE
-                , GLES20.GL_UNSIGNED_BYTE
+                , internalFormat
+                , type
                 , pixelBuffer);
 
         // Set the filtering mode
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
 
         return textureId[0];
     }
@@ -157,16 +170,16 @@ public class SimpleTexture2DRenderer extends MyBaseRenderer {
         mProgramObject = ESShader.loadProgram(vShaderStr, fShaderStr);
 
         // Get the attribute locations
-        mPositionLoc = GLES20.glGetAttribLocation(mProgramObject, "a_position");
-        mTexCoordLoc = GLES20.glGetAttribLocation(mProgramObject, "a_texCoord");
+        mPositionLoc = GLES30.glGetAttribLocation(mProgramObject, "a_position");
+        mTexCoordLoc = GLES30.glGetAttribLocation(mProgramObject, "a_texCoord");
 
         // Get the sampler location
-        mSamplerLoc = GLES20.glGetUniformLocation(mProgramObject, "s_texture");
+        mSamplerLoc = GLES30.glGetUniformLocation(mProgramObject, "s_texture");
 
         // Load the texture
         mTextureId = createSimpleTexture2D();
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     // /
@@ -174,37 +187,37 @@ public class SimpleTexture2DRenderer extends MyBaseRenderer {
     //
     public void onDrawFrame(GL10 glUnused) {
         // Set the viewport
-        GLES20.glViewport(0, 0, mWidth, mHeight);
+        GLES30.glViewport(0, 0, mWidth, mHeight);
 
         // Clear the color buffer
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         // Use the program object
-        GLES20.glUseProgram(mProgramObject);
+        GLES30.glUseProgram(mProgramObject);
 
         // Load the vertex position
         mVertices.position(0);
-        GLES20.glVertexAttribPointer(mPositionLoc, 3, GLES20.GL_FLOAT,
+        GLES30.glVertexAttribPointer(mPositionLoc, 3, GLES30.GL_FLOAT,
                 false,
                 5 * 4, mVertices);
         // Load the texture coordinate
         mVertices.position(3);
-        GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT,
+        GLES30.glVertexAttribPointer(mTexCoordLoc, 2, GLES30.GL_FLOAT,
                 false,
                 5 * 4,
                 mVertices);
 
-        GLES20.glEnableVertexAttribArray(mPositionLoc);
-        GLES20.glEnableVertexAttribArray(mTexCoordLoc);
+        GLES30.glEnableVertexAttribArray(mPositionLoc);
+        GLES30.glEnableVertexAttribArray(mTexCoordLoc);
 
         // Bind the texture
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTextureId);
 
         // Set the sampler texture unit to 0
-        GLES20.glUniform1i(mSamplerLoc, 0);
+        GLES30.glUniform1i(mSamplerLoc, 0);
 
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, mIndices);
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_SHORT, mIndices);
     }
 
     ///
