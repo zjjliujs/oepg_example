@@ -17,10 +17,12 @@
 package com.openglesbook.ch9_texture_wrap;
 
 import android.content.Context;
-import android.opengl.GLES20;
+import android.opengl.GLES30;
 
+import com.ljs.android.oepg_ch6.R;
 import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.ESShader;
+import com.openglesbook.common.TextResourceReader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -121,18 +123,18 @@ public class TextureWrapRenderer extends MyBaseRenderer {
         pixels = genCheckImage(width, height, 64);
 
         // Generate a texture object
-        GLES20.glGenTextures(1, textureId, 0);
+        GLES30.glGenTextures(1, textureId, 0);
 
         // Bind the texture object
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0]);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId[0]);
 
         // Load mipmap level 0
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGB, width, height,
-                0, GLES20.GL_RGB, GLES20.GL_UNSIGNED_BYTE, pixels);
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB, width, height,
+                0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, pixels);
 
         // Set the filtering mode
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
 
         return textureId[0];
     }
@@ -141,44 +143,26 @@ public class TextureWrapRenderer extends MyBaseRenderer {
     // Initialize the shader and program object
     //
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        String vShaderStr =
-                "uniform float u_offset;      \n" +
-                        "attribute vec4 a_position;   \n" +
-                        "attribute vec2 a_texCoord;   \n" +
-                        "varying vec2 v_texCoord;     \n" +
-                        "void main()                  \n" +
-                        "{                            \n" +
-                        "   gl_Position = a_position; \n" +
-                        "   gl_Position.x += u_offset;\n" +
-                        "   v_texCoord = a_texCoord;  \n" +
-                        "}                            \n";
-
-        String fShaderStr =
-                "precision mediump float;                            \n" +
-                        "varying vec2 v_texCoord;                            \n" +
-                        "uniform sampler2D s_texture;                        \n" +
-                        "void main()                                         \n" +
-                        "{                                                   \n" +
-                        "  gl_FragColor = texture2D(s_texture, v_texCoord);  \n" +
-                        "}                                                   \n";
+        String vShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.vertex_shader_ch9_texture_wrap);
+        String fShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.fragment_shader_ch9_texture_wrap);
 
         // Load the shaders and get a linked program object
         mProgramObject = ESShader.loadProgram(vShaderStr, fShaderStr);
 
         // Get the attribute locations
-        mPositionLoc = GLES20.glGetAttribLocation(mProgramObject, "a_position");
-        mTexCoordLoc = GLES20.glGetAttribLocation(mProgramObject, "a_texCoord");
+        mPositionLoc = GLES30.glGetAttribLocation(mProgramObject, "a_position");
+        mTexCoordLoc = GLES30.glGetAttribLocation(mProgramObject, "a_texCoord");
 
         // Get the sampler location
-        mSamplerLoc = GLES20.glGetUniformLocation(mProgramObject, "s_texture");
+        mSamplerLoc = GLES30.glGetUniformLocation(mProgramObject, "s_texture");
 
         // Get the offset location
-        mOffsetLoc = GLES20.glGetUniformLocation(mProgramObject, "u_offset");
+        mOffsetLoc = GLES30.glGetUniformLocation(mProgramObject, "u_offset");
 
         // Load the texture
         mTextureId = createTexture2D();
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     ///
@@ -186,53 +170,53 @@ public class TextureWrapRenderer extends MyBaseRenderer {
     //
     public void onDrawFrame(GL10 glUnused) {
         // Set the viewport
-        GLES20.glViewport(0, 0, mWidth, mHeight);
+        GLES30.glViewport(0, 0, mWidth, mHeight);
 
         // Clear the color buffer
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
         // Use the program object
-        GLES20.glUseProgram(mProgramObject);
+        GLES30.glUseProgram(mProgramObject);
 
         // Load the vertex position
         mVertices.position(0);
-        GLES20.glVertexAttribPointer(mPositionLoc, 4, GLES20.GL_FLOAT,
+        GLES30.glVertexAttribPointer(mPositionLoc, 4, GLES30.GL_FLOAT,
                 false,
                 6 * 4, mVertices);
         // Load the texture coordinate
         mVertices.position(4);
-        GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT,
+        GLES30.glVertexAttribPointer(mTexCoordLoc, 2, GLES30.GL_FLOAT,
                 false,
                 6 * 4,
                 mVertices);
 
-        GLES20.glEnableVertexAttribArray(mPositionLoc);
-        GLES20.glEnableVertexAttribArray(mTexCoordLoc);
+        GLES30.glEnableVertexAttribArray(mPositionLoc);
+        GLES30.glEnableVertexAttribArray(mTexCoordLoc);
 
         // Bind the texture
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mTextureId);
 
         // Set the sampler texture unit to 0
-        GLES20.glUniform1i(mSamplerLoc, 0);
+        GLES30.glUniform1i(mSamplerLoc, 0);
 
         // Draw quad with repeat wrap mode
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
-        GLES20.glUniform1f(mOffsetLoc, -0.7f);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, mIndices);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
+        GLES30.glUniform1f(mOffsetLoc, -0.7f);
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_SHORT, mIndices);
 
         // Draw quad with clamp to edge wrap mode
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glUniform1f(mOffsetLoc, 0.0f);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, mIndices);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glUniform1f(mOffsetLoc, 0.0f);
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_SHORT, mIndices);
 
         // Draw quad with mirrored repeat
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_MIRRORED_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_MIRRORED_REPEAT);
-        GLES20.glUniform1f(mOffsetLoc, 0.7f);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, mIndices);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_MIRRORED_REPEAT);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_MIRRORED_REPEAT);
+        GLES30.glUniform1f(mOffsetLoc, 0.7f);
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_SHORT, mIndices);
     }
 
     ///
