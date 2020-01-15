@@ -34,21 +34,19 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class TextureWrapRenderer extends MyBaseRenderer {
 
-    private final float[] mVerticesData =
-            {
-                    -0.3f, 0.3f, 0.0f, 1.0f,  // Position 0
-                    -1.0f, -1.0f,              // TexCoord 0
-                    -0.3f, -0.3f, 0.0f, 1.0f, // Position 1
-                    -1.0f, 2.0f,              // TexCoord 1
-                    0.3f, -0.3f, 0.0f, 1.0f, // Position 2
-                    2.0f, 2.0f,              // TexCoord 2
-                    0.3f, 0.3f, 0.0f, 1.0f,  // Position 3
-                    2.0f, -1.0f               // TexCoord 3
-            };
-    private final short[] mIndicesData =
-            {
-                    0, 1, 2, 0, 2, 3
-            };
+    private final float[] mVerticesData = {
+            -0.3f, 0.3f, 0.0f, 1.0f,  // Position 0
+            -1.0f, -1.0f,              // TexCoord 0
+            -0.3f, -0.3f, 0.0f, 1.0f, // Position 1
+            -1.0f, 2.0f,              // TexCoord 1
+            0.3f, -0.3f, 0.0f, 1.0f, // Position 2
+            2.0f, 2.0f,              // TexCoord 2
+            0.3f, 0.3f, 0.0f, 1.0f,  // Position 3
+            2.0f, -1.0f               // TexCoord 3
+    };
+    private final short[] mIndicesData = {
+            0, 1, 2, 0, 2, 3
+    };
     // Handle to a program object
     private int mProgramObject;
     // Attribute locations
@@ -72,10 +70,12 @@ public class TextureWrapRenderer extends MyBaseRenderer {
     public TextureWrapRenderer(Context context) {
         super(context);
         mVertices = ByteBuffer.allocateDirect(mVerticesData.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
         mVertices.put(mVerticesData).position(0);
         mIndices = ByteBuffer.allocateDirect(mIndicesData.length * 2)
-                .order(ByteOrder.nativeOrder()).asShortBuffer();
+                .order(ByteOrder.nativeOrder())
+                .asShortBuffer();
         mIndices.put(mIndicesData).position(0);
     }
 
@@ -86,11 +86,9 @@ public class TextureWrapRenderer extends MyBaseRenderer {
         int x, y;
         byte[] pixels = new byte[width * height * 3];
 
-
         for (y = 0; y < height; y++)
             for (x = 0; x < width; x++) {
-                byte rColor = 0;
-                byte bColor = 0;
+                byte rColor, bColor;
 
                 if ((x / checkSize) % 2 == 0) {
                     rColor = (byte) (127 * ((y / checkSize) % 2));
@@ -116,8 +114,7 @@ public class TextureWrapRenderer extends MyBaseRenderer {
     private int createTexture2D() {
         // Texture object handle
         int[] textureId = new int[1];
-        int width = 256,
-                height = 256;
+        int width = 256, height = 256;
         ByteBuffer pixels;
 
         pixels = genCheckImage(width, height, 64);
@@ -129,8 +126,15 @@ public class TextureWrapRenderer extends MyBaseRenderer {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId[0]);
 
         // Load mipmap level 0
-        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGB, width, height,
-                0, GLES30.GL_RGB, GLES30.GL_UNSIGNED_BYTE, pixels);
+        GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D
+                , 0
+                , GLES30.GL_RGB
+                , width
+                , height
+                , 0
+                , GLES30.GL_RGB
+                , GLES30.GL_UNSIGNED_BYTE
+                , pixels);
 
         // Set the filtering mode
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
@@ -180,15 +184,20 @@ public class TextureWrapRenderer extends MyBaseRenderer {
 
         // Load the vertex position
         mVertices.position(0);
-        GLES30.glVertexAttribPointer(mPositionLoc, 4, GLES30.GL_FLOAT,
-                false,
-                6 * 4, mVertices);
+        GLES30.glVertexAttribPointer(mPositionLoc
+                , 4
+                , GLES30.GL_FLOAT
+                , false
+                , 6 * 4
+                , mVertices);
         // Load the texture coordinate
         mVertices.position(4);
-        GLES30.glVertexAttribPointer(mTexCoordLoc, 2, GLES30.GL_FLOAT,
-                false,
-                6 * 4,
-                mVertices);
+        GLES30.glVertexAttribPointer(mTexCoordLoc
+                , 2
+                , GLES30.GL_FLOAT
+                , false
+                , 6 * 4
+                , mVertices);
 
         GLES30.glEnableVertexAttribArray(mPositionLoc);
         GLES30.glEnableVertexAttribArray(mTexCoordLoc);
