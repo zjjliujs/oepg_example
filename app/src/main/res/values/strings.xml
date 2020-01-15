@@ -8,4 +8,5 @@
     <string name="ch6_vao">Ch6 Vertex Array Buffer</string>
     <string name="ch6_vbo">Ch6 Vertex Buffer Object</string>
     <string name="ch9_simple_texture2d">Chaper9 Simple Texture2D</string>
+    <string name="ch9_texture_wrap">Chapter9 Texture Wrap</string>
 </resources>
