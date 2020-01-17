@@ -12,4 +12,5 @@
     <string name="ch9_texture_cubmap">Chapter 9 texture cubmap</string>
     <string name="ch9_mipmap2d">Chapter9 Mipmap 2D</string>
     <string name="muilti_texture">Multi Texture</string>
+    <string name="ch8_simple_shader">Chapter8 Simple Shader</string>
 </resources>
