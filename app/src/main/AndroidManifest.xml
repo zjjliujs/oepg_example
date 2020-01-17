@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.openglesbook.ch9_texture_cubmap.TextureCubMapActivity"></activity>
+        <activity android:name="com.openglesbook.ch9_mipmap2d.MipMap2DActivity"></activity>
+        <activity android:name="com.openglesbook.ch9_texture_cubmap.TextureCubMapActivity" />
         <activity android:name="com.openglesbook.ch9_texture_wrap.TextureWrapActivity" />
         <activity android:name="com.openglesbook.ch9_texture2d.SimpleTexture2DActivity" />
         <activity android:name="com.openglesbook.ch2_hello_triangle.HelloTriangleActivity" />

@@ -17,6 +17,7 @@ import com.openglesbook.ch6_example_6.Example6_6Activity;
 import com.openglesbook.ch6_map_buffers.MapBuffersActivity;
 import com.openglesbook.ch6_vao.VAOActivity;
 import com.openglesbook.ch6_vbo.VBOActivity;
+import com.openglesbook.ch9_mipmap2d.MipMap2DActivity;
 import com.openglesbook.ch9_texture2d.SimpleTexture2DActivity;
 import com.openglesbook.ch9_texture_cubmap.TextureCubMapActivity;
 import com.openglesbook.ch9_texture_wrap.TextureWrapActivity;
@@ -44,6 +45,7 @@ class MainRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         data.add(new Pair<>(R.string.ch9_simple_texture2d, SimpleTexture2DActivity.class));
         data.add(new Pair<>(R.string.ch9_texture_wrap, TextureWrapActivity.class));
         data.add(new Pair<>(R.string.ch9_texture_cubmap, TextureCubMapActivity.class));
+        data.add(new Pair<>(R.string.ch9_mipmap2d, MipMap2DActivity.class));
     }
 
     @NonNull
