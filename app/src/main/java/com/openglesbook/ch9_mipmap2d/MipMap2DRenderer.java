@@ -34,6 +34,11 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MipMap2DRenderer extends MyBaseRenderer {
 
+    private static final int FLOAT_NUMBER_SIZE = 4;
+    private static final int POS_COMPONENT_COUNT = 4;
+    private static final int TEXTURE_CORD_COMPONENT_COUNT = 2;
+    public static final int TOTAL_COMPONENT_COUNT = POS_COMPONENT_COUNT + TEXTURE_CORD_COMPONENT_COUNT;
+    public static final int PIXEL_BYTE_SIZE = 3;    //GL_RGB
     private final float[] mVerticesData = {
             -0.5f, 0.5f, 0.0f, 1.5f,  // Position 0
             0.0f, 0.0f,              // TexCoord 0
@@ -45,7 +50,7 @@ public class MipMap2DRenderer extends MyBaseRenderer {
             1.0f, 0.0f               // TexCoord 3
     };
     private final short[] mIndicesData = {
-            0, 1, 2, 0, 2, 3
+            0, 1, 2, 0, 2, PIXEL_BYTE_SIZE
     };
     // Handle to a program object
     private int mProgramObject;
@@ -69,7 +74,7 @@ public class MipMap2DRenderer extends MyBaseRenderer {
     //
     public MipMap2DRenderer(Context context) {
         super(context);
-        mVertices = ByteBuffer.allocateDirect(mVerticesData.length * 4)
+        mVertices = ByteBuffer.allocateDirect(mVerticesData.length * POS_COMPONENT_COUNT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mVertices.put(mVerticesData).position(0);
         mIndices = ByteBuffer.allocateDirect(mIndicesData.length * 2)
@@ -82,16 +87,14 @@ public class MipMap2DRenderer extends MyBaseRenderer {
     //
     private byte[] genMipMap2D(byte[] src, int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
         int x, y;
-        int texelSize = 3;
+        int texelSize = PIXEL_BYTE_SIZE;
 
         byte[] dst = new byte[texelSize * (dstWidth) * (dstHeight)];
 
         for (y = 0; y < dstHeight; y++) {
             for (x = 0; x < dstWidth; x++) {
-                int[] srcIndex = new int[4];
-                float r = 0.0f,
-                        g = 0.0f,
-                        b = 0.0f;
+                int[] srcIndex = new int[POS_COMPONENT_COUNT];
+                float r = 0.0f, g = 0.0f, b = 0.0f;
                 int sample;
 
                 // Compute the offsets for 2x2 grid of pixels in previous
@@ -102,11 +105,11 @@ public class MipMap2DRenderer extends MyBaseRenderer {
                         (((y * 2) * srcWidth) + (x * 2 + 1)) * texelSize;
                 srcIndex[2] =
                         ((((y * 2) + 1) * srcWidth) + (x * 2)) * texelSize;
-                srcIndex[3] =
+                srcIndex[PIXEL_BYTE_SIZE] =
                         ((((y * 2) + 1) * srcWidth) + (x * 2 + 1)) * texelSize;
 
                 // Sum all pixels
-                for (sample = 0; sample < 4; sample++) {
+                for (sample = 0; sample < POS_COMPONENT_COUNT; sample++) {
                     r += src[srcIndex[sample]];
                     g += src[srcIndex[sample] + 1];
                     b += src[srcIndex[sample] + 2];
@@ -131,7 +134,7 @@ public class MipMap2DRenderer extends MyBaseRenderer {
     //
     private byte[] genCheckImage(int width, int height, int checkSize) {
         int x, y;
-        byte[] pixels = new byte[width * height * 3];
+        byte[] pixels = new byte[width * height * PIXEL_BYTE_SIZE];
 
 
         for (y = 0; y < height; y++)
@@ -147,9 +150,9 @@ public class MipMap2DRenderer extends MyBaseRenderer {
                     rColor = (byte) (127 * (1 - ((y / checkSize) % 2)));
                 }
 
-                pixels[(y * height + x) * 3] = rColor;
-                pixels[(y * height + x) * 3 + 1] = 0;
-                pixels[(y * height + x) * 3 + 2] = bColor;
+                pixels[(y * height + x) * PIXEL_BYTE_SIZE] = rColor;
+                pixels[(y * height + x) * PIXEL_BYTE_SIZE + 1] = 0;
+                pixels[(y * height + x) * PIXEL_BYTE_SIZE + 2] = bColor;
             }
 
         return pixels;
@@ -176,7 +179,7 @@ public class MipMap2DRenderer extends MyBaseRenderer {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId[0]);
 
         // Load mipmap level 0
-        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(width * height * 3);
+        ByteBuffer pixelBuffer = ByteBuffer.allocateDirect(width * height * PIXEL_BYTE_SIZE);
         pixelBuffer.put(pixels).position(0);
 
         GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D
@@ -193,8 +196,7 @@ public class MipMap2DRenderer extends MyBaseRenderer {
         prevImage = pixels;
 
         while (width > 1 && height > 1) {
-            int newWidth,
-                    newHeight;
+            int newWidth, newHeight;
 
             newWidth = width / 2;
             if (newWidth <= 0)
@@ -208,11 +210,17 @@ public class MipMap2DRenderer extends MyBaseRenderer {
             newImage = genMipMap2D(prevImage, width, height, newWidth, newHeight);
 
             // Load the mipmap level
-            pixelBuffer = ByteBuffer.allocateDirect(newWidth * newHeight * 3);
+            pixelBuffer = ByteBuffer.allocateDirect(newWidth * newHeight * PIXEL_BYTE_SIZE);
             pixelBuffer.put(newImage).position(0);
-            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D, level, GLES30.GL_RGB,
-                    newWidth, newHeight, 0, GLES30.GL_RGB,
-                    GLES30.GL_UNSIGNED_BYTE, pixelBuffer);
+            GLES30.glTexImage2D(GLES30.GL_TEXTURE_2D
+                    , level
+                    , GLES30.GL_RGB
+                    , newWidth
+                    , newHeight
+                    , 0
+                    , GLES30.GL_RGB
+                    , GLES30.GL_UNSIGNED_BYTE
+                    , pixelBuffer);
 
             // Set the previous image for the next iteration
             prevImage = newImage;
@@ -274,15 +282,21 @@ public class MipMap2DRenderer extends MyBaseRenderer {
 
         // Load the vertex position
         mVertices.position(0);
-        GLES30.glVertexAttribPointer(mPositionLoc, 4, GLES30.GL_FLOAT,
-                false,
-                6 * 4, mVertices);
+        int stride = TOTAL_COMPONENT_COUNT * FLOAT_NUMBER_SIZE;
+        GLES30.glVertexAttribPointer(mPositionLoc
+                , POS_COMPONENT_COUNT
+                , GLES30.GL_FLOAT
+                , false
+                , stride
+                , mVertices);
         // Load the texture coordinate
-        mVertices.position(4);
-        GLES30.glVertexAttribPointer(mTexCoordLoc, 2, GLES30.GL_FLOAT,
-                false,
-                6 * 4,
-                mVertices);
+        mVertices.position(POS_COMPONENT_COUNT);
+        GLES30.glVertexAttribPointer(mTexCoordLoc
+                , TEXTURE_CORD_COMPONENT_COUNT
+                , GLES30.GL_FLOAT
+                , false
+                , stride
+                , mVertices);
 
         GLES30.glEnableVertexAttribArray(mPositionLoc);
         GLES30.glEnableVertexAttribArray(mTexCoordLoc);
