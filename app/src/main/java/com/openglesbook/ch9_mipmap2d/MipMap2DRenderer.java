@@ -19,8 +19,10 @@ package com.openglesbook.ch9_mipmap2d;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.ljs.android.oepg_ch6.R;
 import com.openglesbook.base.MyBaseRenderer;
 import com.openglesbook.common.ESShader;
+import com.openglesbook.common.TextResourceReader;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -234,26 +236,9 @@ public class MipMap2DRenderer extends MyBaseRenderer {
     // Initialize the shader and program object
     //
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        String vShaderStr =
-                "uniform float u_offset;      \n" +
-                        "attribute vec4 a_position;   \n" +
-                        "attribute vec2 a_texCoord;   \n" +
-                        "varying vec2 v_texCoord;     \n" +
-                        "void main()                  \n" +
-                        "{                            \n" +
-                        "   gl_Position = a_position; \n" +
-                        "   gl_Position.x += u_offset;\n" +
-                        "   v_texCoord = a_texCoord;  \n" +
-                        "}                            \n";
+        String vShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.vertex_shader_ch9_mipmap2d);
 
-        String fShaderStr =
-                "precision mediump float;                            \n" +
-                        "varying vec2 v_texCoord;                            \n" +
-                        "uniform sampler2D s_texture;                        \n" +
-                        "void main()                                         \n" +
-                        "{                                                   \n" +
-                        "  gl_FragColor = texture2D(s_texture, v_texCoord);  \n" +
-                        "}                                                   \n";
+        String fShaderStr = TextResourceReader.readTextFileFromResource(context, R.raw.fragment_shader_ch9_mipmap2d);
 
         // Load the shaders and get a linked program object
         mProgramObject = ESShader.loadProgram(vShaderStr, fShaderStr);
